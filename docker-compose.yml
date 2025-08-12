@@ -1,0 +1,6 @@
+services:
+  tasks-api:
+    image: tasks-api
+    build: .
+    ports:
+      - "8000:8000"
