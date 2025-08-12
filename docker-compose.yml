@@ -2,5 +2,11 @@ services:
   tasks-api:
     image: tasks-api
     build: .
+    environment:
+      SQLITE_FILENAME: ${SQLITE_FILENAME}
+    volumes:
+      - "./src:/app/src"
+      - "./data:/app/data"
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
+  
