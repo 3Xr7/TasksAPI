@@ -30,7 +30,7 @@ def test_create_task(task_dictionary):
   assert task_created["description"] == task_dictionary["description"]
   assert task_created["priority"] == task_dictionary["priority"]
   assert task_created["due_date"] == task_dictionary["due_date"]
-  assert task_created["completed"] == False
+  assert not task_created["completed"]
 
 
 def test_update_task(task_dictionary):
@@ -47,7 +47,7 @@ def test_update_task(task_dictionary):
 
   assert task_updated["title"] == task_dictionary["title"]
   assert task_updated["description"] == task_dictionary["description"]
-  assert task_updated["completed"] == True
+  assert task_updated["completed"]
 
 
 def test_delete_task():

@@ -160,7 +160,7 @@ def random_task_title_description() -> dict:
     A function to get a randomly selected task title and description from a
     predefined list generated using Lumo AI (https://lumo.proton.me). I asked an
     AI to get the titles and description because I didn't want to think of them
-    myself. 
+    myself.
 
     Returns
     -------
@@ -194,7 +194,7 @@ def random_task_title_description() -> dict:
     }
   ]
   return task_title_descriptions[random.randint(0, 4)]
- 
+
 
 @pytest.fixture()
 def task_dictionary() -> dict:

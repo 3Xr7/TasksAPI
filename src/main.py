@@ -8,9 +8,11 @@ from src.models import Task
 
 app = FastAPI()
 
+
 @app.on_event("startup")
 def on_startup():
   setup_db_and_tables()
+
 
 @app.get("/tasks/")
 def get_tasks(
@@ -20,6 +22,7 @@ def get_tasks(
 ) -> list[Task]:
   tasks = session.exec(select(Task).offset(offset).limit(limit)).all()
   return tasks
+
 
 @app.post("/tasks/", response_model=Task)
 def create_task(task: Task, session: SessionDep) -> Task:
