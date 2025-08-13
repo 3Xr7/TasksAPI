@@ -14,4 +14,5 @@ CMD ["fastapi", "dev", "--host", "0.0.0.0", "src/main.py"]
 FROM dev AS test
 
 RUN pip install pytest \
-                httpx
+                httpx \
+                flake8

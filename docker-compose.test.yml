@@ -1,5 +1,5 @@
 services:
-  tasks-api:
+  test-api:
     image: test-tasks-api
     build:
       context: .
@@ -8,6 +8,7 @@ services:
     environment:
       SQLITE_FILENAME: "test.db"
     volumes:
+      - "./.flake8:/app/.flake8"
       - "./src:/app/src"
       - "./tests:/app/tests"
       - "./data:/app/data"
