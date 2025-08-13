@@ -1,14 +1,13 @@
 services:
   tasks-api:
-    image: tasks-api
+    image: test-tasks-api
     build:
       context: .
-      target: dev
+      target: test
+    command: pytest
     environment:
-      SQLITE_FILENAME: ${SQLITE_FILENAME}
+      SQLITE_FILENAME: "test.db"
     volumes:
       - "./src:/app/src"
+      - "./tests:/app/tests"
       - "./data:/app/data"
-    ports:
-      - "127.0.0.1:8000:8000"
-  

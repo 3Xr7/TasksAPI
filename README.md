@@ -19,6 +19,15 @@ docker compose up -d --build
 ### Making Changes
 While the `tasks-api` container is running changes to `src/*.py` files hot reload allowing for quick iteration cycles due to change effects visible near instantaniously.
 
+### Running Tests
+For the time being the test suite runs from within a secondary compose file `docker-compoes.test.yml`.
+
+#### Run
+```sh
+docker compose -f .\docker-compose.test.yml up
+```
+
+The command promt may appear to be left attached to the container output, its likely done pressing any key will clear that up.
 
 ## Calling Tasks API Via Command Line
 ### Linux Shell
