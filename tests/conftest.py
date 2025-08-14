@@ -215,3 +215,16 @@ def task_dictionary() -> dict:
     'completed': False,
     'due_date': str_format_due_date(mock_due_date(random.randint(1, 5)))
   }
+
+
+@pytest.fixture()
+def update_task(task_dictionary):
+  task_ids = all_task_ids()
+  task_id = random.randint(min(task_ids), max(task_ids))
+
+  update_task = get_task_by_id(task_id)
+  update_task["title"] = task_dictionary["title"]
+  update_task["description"] = task_dictionary["description"]
+  update_task["completed"] = True
+
+  return update_task

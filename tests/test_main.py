@@ -1,8 +1,12 @@
-import random
+import pytest
 
 from fastapi.testclient import TestClient
 from src.main import app
-from tests.conftest import all_task_ids, get_task_by_id
+from tests.conftest import (
+  all_task_ids,
+  mock_due_date,
+  get_task_by_id
+)
 
 client = TestClient(app)
 
@@ -11,6 +15,25 @@ def test_get_tasks(all_tasks):
   resp = client.get("/tasks/")
   assert resp.status_code == 200
   assert resp.json() == all_tasks
+
+
+def test_get_task():
+  task_id = 1
+
+  resp = client.get(f"/tasks/{task_id}")
+
+  assert resp.status_code == 200
+  assert resp.json() == get_task_by_id(1)
+
+
+def test_get_task_that_does_not_exist():
+  task_id = max(all_task_ids()) + 1
+
+  resp = client.get(f"/tasks/{task_id}")
+
+  assert resp.status_code == 404
+  assert "detail" in resp.json().keys()
+  assert resp.json()["detail"] == "Task not found"
 
 
 def test_create_task(task_dictionary):
@@ -33,21 +56,41 @@ def test_create_task(task_dictionary):
   assert not task_created["completed"]
 
 
-def test_update_task(task_dictionary):
-  task_ids = all_task_ids()
-  task_id = random.randint(min(task_ids), max(task_ids))
-
-  update_task = get_task_by_id(task_id)
-  update_task["title"] = task_dictionary["title"]
-  update_task["description"] = task_dictionary["description"]
-  update_task["completed"] = True
+def test_update_task(update_task):
+  task_id = update_task["id"]
 
   resp = client.put(f"/tasks/{task_id}", json=update_task)
   task_updated = resp.json()
 
-  assert task_updated["title"] == task_dictionary["title"]
-  assert task_updated["description"] == task_dictionary["description"]
+  assert task_updated["title"] == update_task["title"]
+  assert task_updated["description"] == update_task["description"]
   assert task_updated["completed"]
+
+
+@pytest.mark.parametrize("due_date", [
+    mock_due_date().strftime("%m/%d/%Y %H:%M:%S"),
+    mock_due_date().strftime("%d/%m/%Y %H:%M:%S")
+])
+def test_update_task_due_date_formats(update_task, due_date):
+  task_id = update_task["id"]
+  update_task["due_date"] = due_date
+
+  resp = client.put(f"/tasks/{task_id}", json=update_task)
+
+  assert resp.status_code == 400
+  assert "detail" in resp.json().keys()
+  assert resp.json()["detail"] == f"Invalid isoformat string: '{due_date}'"
+
+
+def test_update_task_with_id_that_does_not_exit(update_task):
+  task_id = max(all_task_ids()) + 1
+  update_task["id"] = task_id
+
+  resp = client.put(f"/tasks/{task_id}", json=update_task)
+
+  assert resp.status_code == 404
+  assert "detail" in resp.json().keys()
+  assert resp.json()["detail"] == "Task not found"
 
 
 def test_delete_task():
@@ -57,3 +100,13 @@ def test_delete_task():
 
   assert "message" in resp.json().keys()
   assert resp.json()["message"] == "Task deleted successfully."
+
+
+def test_delete_task_that_does_not_exist():
+  task_id = max(all_task_ids()) + 1
+
+  resp = client.delete(f"/tasks/{task_id}")
+
+  assert resp.status_code == 404
+  assert "detail" in resp.json().keys()
+  assert resp.json()["detail"] == "Task not found"
