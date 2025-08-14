@@ -32,13 +32,20 @@ docker compose -f .\docker-compose.test.yml up
 
 Alternatively:
 ```sh
-docker compose -f .\docker-compose.test.yml run test-api pytest
+docker compose -f .\docker-compose.test.yml run --rm test-api pytest
 ```
   - This execution method produces better output to terminal.
 
 #### Run Flake8
 ```sh
-docker compose -f .\docker-compose.test.yml run test-api tox -e flake
+docker compose -f .\docker-compose.test.yml run --rm test-api flake8
+```
+
+#### Clean Up
+When running `pytest` or `flake8` with `docker compose -f .\docker-compose.test.yml run test-api` with out `--rm` option docker wont remove 
+the containers.
+```sh
+docker container prune
 ```
 
 ## Calling Tasks API Via Command Line
